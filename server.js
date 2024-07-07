@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Conversation = require('./conversationModel');
 const interactWithVoiceflow = require('./voiceFlow');
-const db = require('./db'); // Conexión a la base de datos
+const db = require('./db'); // Conexión a la base de datos Ingresar los datos correspondientes
 
 const app = express();
 const PORT = process.env.PORT || 3000;
