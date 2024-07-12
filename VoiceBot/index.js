@@ -2,17 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Conversation = require('./conversationModel');
 const interactWithVoiceflow = require('./voiceFlow');
-const db = require('./db'); // Conexión a la base de datos Ingresar los datos correspondientes
+const db = require('./db'); // Conexión a la base de datos, ajustar según necesidad
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware para manejar JSON en las solicitudes
 app.use(express.json());
 
 // Ruta para guardar una conversación e interactuar con Voiceflow
 app.post('/guardar-conversacion', async (req, res) => {
-  const { clientId, message } = req.body;
+  const { clientId, message, entidad_financiera, nombre, monto, fecha_limite_pago } = req.body;
 
   try {
     // Guardar la conversación en MongoDB
@@ -23,8 +22,13 @@ app.post('/guardar-conversacion', async (req, res) => {
     });
     await nuevaConversacion.save();
 
-    // Interactuar con Voiceflow
-    const voiceflowResponse = await interactWithVoiceflow(clientId, message);
+    // Interactuar con Voiceflow enviando las nuevas variables
+    const voiceflowResponse = await interactWithVoiceflow(clientId, message, {
+      entidad_financiera,
+      nombre,
+      monto,
+      fecha_limite_pago,
+    });
 
     res.status(201).json({ message: 'Conversación guardada y procesada correctamente', voiceflowResponse });
   } catch (error) {
